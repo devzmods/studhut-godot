@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://737k83kk1fab"]
+
+[ext_resource type="Script" uid="uid://sh757bc6jq2l" path="res://scenes/main/scripts/main.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://xf30nf2xcl0g" path="res://scenes/main/scripts/view.gd" id="2_iuonh"]
+
+[sub_resource type="Environment" id="Environment_o5qli"]
+background_mode = 1
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hyk8p"]
+
+[node name="world" type="Node3D"]
+script = ExtResource("1_o5qli")
+
+[node name="box" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00241947, -4.76837e-07, -5.24607)
+
+[node name="environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_o5qli")
+
+[node name="view" type="CharacterBody3D" parent="."]
+script = ExtResource("2_iuonh")
+
+[node name="pivot" type="Node3D" parent="view"]
+
+[node name="camera" type="Camera3D" parent="view/pivot"]
+fov = 70.0
+
+[node name="collision" type="CollisionShape3D" parent="view"]
+shape = SubResource("SphereShape3D_hyk8p")
+disabled = true
