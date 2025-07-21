@@ -8,6 +8,10 @@
 
 config_version=5
 
+[addons]
+
+imgui/config="uid://ch5veqglrqk31"
+
 [application]
 
 config/name="Studhut"

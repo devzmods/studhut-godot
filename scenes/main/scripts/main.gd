@@ -3,11 +3,12 @@ extends Node3D
 var show_window: bool = true
 var current_project: Project
 
+
 func _process(_delta: float) -> void:
 	if not show_window: return
 
 	var is_open: Array = [show_window]
-
+	
 	ImGui.Begin("Project", is_open, ImGui.WindowFlags_MenuBar)
 
 	if ImGui.BeginMenuBar(): # main menubar
