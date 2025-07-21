@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ImGuiFont" load_steps=3 format=3 uid="uid://6uxo34adm75t"]
+
+[ext_resource type="FontFile" uid="uid://diol8snr82xh8" path="res://ComicSans.ttf" id="1_6i6xw"]
+[ext_resource type="Script" uid="uid://dg4mphxkk1xyc" path="res://addons/imgui-godot/scripts/ImGuiFont.gd" id="1_l60je"]
+
+[resource]
+script = ExtResource("1_l60je")
+FontData = ExtResource("1_6i6xw")
+FontSize = 16
+Merge = true
+metadata/_custom_type_script = "uid://dg4mphxkk1xyc"
