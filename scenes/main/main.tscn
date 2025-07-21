@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://737k83kk1fab"]
+[gd_scene load_steps=5 format=3 uid="uid://737k83kk1fab"]
 
 [ext_resource type="Script" uid="uid://sh757bc6jq2l" path="res://scenes/main/scripts/main.gd" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://xf30nf2xcl0g" path="res://scenes/main/scripts/view.gd" id="2_iuonh"]
-[ext_resource type="Script" uid="uid://benmtghivl21y" path="res://objects/GizObstacle.gd" id="3_k2fmo"]
 
 [sub_resource type="Environment" id="Environment_o5qli"]
 background_mode = 1
@@ -31,7 +30,3 @@ fov = 70.0
 [node name="collision" type="CollisionShape3D" parent="view"]
 shape = SubResource("SphereShape3D_hyk8p")
 disabled = true
-
-[node name="GizObstacle" type="Node" parent="."]
-script = ExtResource("3_k2fmo")
-metadata/_custom_type_script = "uid://benmtghivl21y"
