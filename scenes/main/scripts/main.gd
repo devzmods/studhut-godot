@@ -1,6 +1,7 @@
 extends Node3D
 
 var show_window: bool = true
+var current_project: Project
 
 func _process(_delta: float) -> void:
 	if not show_window: return
@@ -35,6 +36,8 @@ func _process(_delta: float) -> void:
 		if ImGui.Selectable("Gizmo 1"): pass
 		ImGui.TreePop()
 	
+	# ImGui.PopFont()
+
 	ImGui.End()
 
 	show_window = is_open[0]
@@ -45,7 +48,8 @@ func import_scene(path: String):
 	if file:
 		var buffer = file.get_buffer(file.get_length())
 
-		SceneReader.read_scene(buffer)
+		var scene_reader = SceneReader.new(buffer)
+		scene_reader.read_scene()
 
 		file.close()
 	else:

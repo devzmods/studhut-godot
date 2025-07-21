@@ -4,9 +4,10 @@ extends CharacterBody3D
 @export var look_sens: float = 0.2
 
 @onready var pivot: Node3D = $pivot
+var look_enabled: bool = false
 
 func _input(event: InputEvent) -> void:
-	var look_enabled: bool = Input.is_action_pressed("enable_look")
+	look_enabled = Input.is_action_pressed("enable_look")
 	
 	if look_enabled and event is InputEventMouseMotion:
 		rotate_y(deg_to_rad(-event.relative.x) * look_sens)
@@ -25,4 +26,5 @@ func _physics_process(_delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, move_speed)
 		velocity.y = move_toward(velocity.y, 0, move_speed)
 
-	move_and_slide()
+	if look_enabled:
+		move_and_slide()
