@@ -1,8 +1,8 @@
 extends Node
 
 enum SceneFormat {
-    TCS,
-    LIJ
+	TCS,
+	LIJ
 }
 
 var SCENE_FORMAT: SceneFormat
