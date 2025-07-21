@@ -17,6 +17,8 @@ imgui/config="uid://ch5veqglrqk31"
 config/name="Studhut"
 run/main_scene="uid://737k83kk1fab"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
 config/icon="res://icon.svg"
 
 [autoload]

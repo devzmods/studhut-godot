@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://diol8snr82xh8"
-path="res://.godot/imported/ComicSans.ttf-e87d37c98ae77ea5e167b162ad113c7f.fontdata"
+path="res://.godot/imported/ComicSans.ttf-045dfe8fa1e0d3492b6190b8c06cd16d.fontdata"
 
 [deps]
 
-source_file="res://ComicSans.ttf"
-dest_files=["res://.godot/imported/ComicSans.ttf-e87d37c98ae77ea5e167b162ad113c7f.fontdata"]
+source_file="res://fonts/ComicSans.ttf"
+dest_files=["res://.godot/imported/ComicSans.ttf-045dfe8fa1e0d3492b6190b8c06cd16d.fontdata"]
 
 [params]
 
