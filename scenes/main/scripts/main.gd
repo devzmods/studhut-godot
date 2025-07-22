@@ -4,55 +4,63 @@ var show_window: bool = true
 var current_project: Project
 
 
+
+func _show_file_dialog(filters: Array, connect_callable: Callable):
+	"""Helper function to create and show a file dialog."""
+	var file_dialog = FileDialog.new()
+	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	file_dialog.filters = filters
+	file_dialog.use_native_dialog = true
+	file_dialog.current_dir = OS.get_environment("HOME") + "/Downloads"
+	
+	file_dialog.file_selected.connect(connect_callable)
+	
+	add_child(file_dialog)
+	file_dialog.popup_centered()
+	
+
 func _process(_delta: float) -> void:
 	if not show_window: return
 
 	var is_open: Array = [show_window]
 	
-	ImGui.Begin("Project", is_open, ImGui.WindowFlags_MenuBar)
 
-	if ImGui.BeginMenuBar(): # main menubar
+	# --- Main Menu Bar for the entire screen ---
+	if ImGui.BeginMainMenuBar():
 		if ImGui.BeginMenu("File"):
 			if ImGui.MenuItem("New Project.."): pass
 			if ImGui.MenuItem("Open Project.."): pass
 			if ImGui.MenuItem("Save Project.."): pass
-			if ImGui.MenuItem("Import Scene.."): 
-				var file_dialog: FileDialog = FileDialog.new()
-
-				file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-				file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-				file_dialog.filters = ["*.gsc ; TTGames Scene File"]
-				file_dialog.use_native_dialog = true
-				file_dialog.current_dir = OS.get_environment("HOME") + "/Downloads"
-
-				file_dialog.file_selected.connect(import_scene)
-
-				add_child(file_dialog)
-
-				file_dialog.popup_centered()
-			if ImGui.MenuItem("Import Giz File.."): 
-				var file_dialog: FileDialog = FileDialog.new()
-
-				file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-				file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-				file_dialog.filters = ["*.giz ; TTGames Gizmo File"]
-				file_dialog.use_native_dialog = true
-				file_dialog.current_dir = OS.get_environment("HOME") + "/Downloads"
-
-				file_dialog.file_selected.connect(import_gizmo)
-
-				add_child(file_dialog)
-
-				file_dialog.popup_centered()
+			if ImGui.MenuItem("Import Scene.."):
+				_show_file_dialog(["*.gsc ; TTGames Scene File"], import_scene)
+			if ImGui.MenuItem("Import Giz File.."):
+				_show_file_dialog(["*.giz ; TTGames Gizmo File"], import_gizmo)
 			ImGui.EndMenu()
-		ImGui.EndMenuBar()
 
+	ImGui.EndMainMenuBar() 
+	
+	
+	var viewport = get_viewport().get_visible_rect()
+	
+	var panel_width = viewport.size.x * 0.2
+	var menu_bar_height = ImGui.GetFrameHeight()
+	var panel_pos = Vector2(0, menu_bar_height)
+	var panel_size = Vector2(panel_width, viewport.size.y - menu_bar_height)
+
+	ImGui.SetNextWindowPos(panel_pos)
+	ImGui.SetNextWindowSize(panel_size)
+	var window_flags = ImGui.WindowFlags_NoMove | ImGui.WindowFlags_NoResize | ImGui.WindowFlags_NoTitleBar | ImGui.WindowFlags_NoCollapse
+
+	ImGui.Begin("Project", is_open, window_flags)
+	
 	if ImGui.TreeNode("Gizmos"): # Gizmos list
-		if ImGui.Selectable("Gizmo 1"): pass
+		var children = get_node("worldScene").get_children()
+		for child in children:
+			if child is GizObstacle:
+				if ImGui.Selectable(child.Name): pass
 		ImGui.TreePop()
 	
-	# ImGui.PopFont()
-
 	ImGui.End()
 
 	show_window = is_open[0]
@@ -79,7 +87,7 @@ func import_gizmo(path: String):
 		var giz_reader = GizReader.new(buffer)
 		var gizmos = giz_reader.read_giz()
 		for i in gizmos:
-			add_child(i)
+			get_node("worldScene").add_child(i)
 		file.close()
 	else:
 		print("File could not be opened.")
