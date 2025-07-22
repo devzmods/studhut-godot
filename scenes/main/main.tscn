@@ -13,6 +13,8 @@ ambient_light_color = Color(1, 1, 1, 1)
 [node name="world" type="Node3D"]
 script = ExtResource("1_o5qli")
 
+[node name="worldScene" type="Node3D" parent="."]
+
 [node name="box" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00241947, -4.76837e-07, -5.24607)
 

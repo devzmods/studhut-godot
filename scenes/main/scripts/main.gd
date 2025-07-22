@@ -77,8 +77,9 @@ func import_gizmo(path: String):
 		var buffer = file.get_buffer(file.get_length())
 
 		var giz_reader = GizReader.new(buffer)
-		giz_reader.read_giz()
-
+		var gizmos = giz_reader.read_giz()
+		for i in gizmos:
+			add_child(i)
 		file.close()
 	else:
 		print("File could not be opened.")
