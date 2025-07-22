@@ -36,6 +36,8 @@ func _process(_delta: float) -> void:
 				_show_file_dialog(["*.gsc ; TTGames Scene File"], import_scene)
 			if ImGui.MenuItem("Import Giz File.."):
 				_show_file_dialog(["*.giz ; TTGames Gizmo File"], import_gizmo)
+			if ImGui.MenuItem("Import Spline File.."):
+				_show_file_dialog(["*.spl ; TTGames Spline File"], import_spline)
 			ImGui.EndMenu()
 
 	ImGui.EndMainMenuBar() 
@@ -86,6 +88,19 @@ func import_gizmo(path: String):
 
 		var giz_reader = GizReader.new(buffer)
 		var gizmos = giz_reader.read_giz()
+		for i in gizmos:
+			get_node("worldScene").add_child(i)
+		file.close()
+	else:
+		print("File could not be opened.")
+func import_spline(path: String):
+	var file = FileAccess.open(path, FileAccess.READ)
+
+	if file:
+		var buffer = file.get_buffer(file.get_length())
+
+		var spline_reader = SplineReader.new(buffer)
+		var gizmos = spline_reader.read_spline()
 		for i in gizmos:
 			get_node("worldScene").add_child(i)
 		file.close()
