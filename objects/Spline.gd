@@ -10,7 +10,8 @@ func Render():
 	add_child(_mesh_instance)
 	var curve = Curve3D.new()
 	for point in get_children():
-		curve.add_point(point.position)
+		if point is SplineControlPoint:
+			curve.add_point(point.position)
 	var line_points = curve.tessellate(1)
 	var mesh = ArrayMesh.new()
 	var surface_array = []
