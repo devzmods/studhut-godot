@@ -27,9 +27,9 @@ func read_giz():
 		var chunkName = buffer.array.slice(buffer.position, buffer.position + chunkNameLength).get_string_from_ascii()
 		buffer.position += chunkNameLength
 		var chunkPayloadLength = buffer.getInt32()
-		print("Found Chunk: " + chunkName)
+		# print("Found Chunk: " + chunkName)
 		if chunkName == "GizObstacle":
-			# var obstacleVersion = buffer.getInt8()
+			var obstacleVersion = buffer.getInt8()
 			var obstacleCount = buffer.getInt16()
 			for i in range(obstacleCount):
 				var currentGizmo = GizObstacle.new()
@@ -52,7 +52,7 @@ func read_giz():
 				buffer.getFloat()
 				buffer.getInt8()
 				#animation stuff
-				# var animationVersion = buffer.getInt8()
+				var animationVersion = buffer.getInt8()
 				var animationCount = buffer.getInt8()
 				for x in range(animationCount):
 					var aniNameLength = buffer.getInt8()
@@ -79,8 +79,10 @@ func read_giz():
 				buffer.getInt8()
 				#print(currentGizmo.Name)
 				obstacleList.append(currentGizmo)
+
+				# break
 		else:
 			position = position + chunkPayloadLength
-	print(obstacleList)
+	# print(obstacleList)
 		
 	return obstacleList

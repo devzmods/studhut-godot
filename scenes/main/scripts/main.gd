@@ -91,15 +91,16 @@ func import_gizmo(path: String):
 		file.close()
 	else:
 		print("File could not be opened.")
+
 func import_spline(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
 	if file:
-		var buffer = file.get_buffer(file.get_length())
+		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
 		var spline_reader = SplineReader.new(buffer)
-		var gizmos = spline_reader.read_spline()
-		for i in gizmos:
+		var splines = spline_reader.read_spline()
+		for i in splines:
 			get_node("worldScene").add_child(i)
 		file.close()
 	else:
