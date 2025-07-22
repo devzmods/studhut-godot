@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 class_name GizObstacle
 @export var Name: String
 @export var Position: Vector3
