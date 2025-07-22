@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://737k83kk1fab"]
+[gd_scene load_steps=5 format=3 uid="uid://737k83kk1fab"]
 
 [ext_resource type="Script" uid="uid://sh757bc6jq2l" path="res://scenes/main/scripts/main.gd" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://xf30nf2xcl0g" path="res://scenes/main/scripts/view.gd" id="2_iuonh"]
@@ -9,8 +9,6 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_hyk8p"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_k2fmo"]
 
 [node name="world" type="Node3D"]
 script = ExtResource("1_o5qli")
@@ -34,12 +32,3 @@ fov = 70.0
 [node name="collision" type="CollisionShape3D" parent="view"]
 shape = SubResource("SphereShape3D_hyk8p")
 disabled = true
-
-[node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.68007)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
-mesh = SubResource("BoxMesh_k2fmo")
-
-[node name="Label3D" type="Label3D" parent="Node3D/MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977496, 0)

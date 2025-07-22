@@ -3,8 +3,6 @@ extends Node3D
 var show_window: bool = true
 var current_project: Project
 
-
-
 func _show_file_dialog(filters: Array, connect_callable: Callable):
 	"""Helper function to create and show a file dialog."""
 	var file_dialog = FileDialog.new()
@@ -38,7 +36,7 @@ func _process(_delta: float) -> void:
 				_show_file_dialog(["*.giz ; TTGames Gizmo File"], import_gizmo)
 			ImGui.EndMenu()
 
-	ImGui.EndMainMenuBar() 
+	ImGui.EndMainMenuBar()
 	
 	
 	var viewport = get_viewport().get_visible_rect()
@@ -69,7 +67,7 @@ func import_scene(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
 	if file:
-		var buffer = file.get_buffer(file.get_length())
+		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
 		var scene_reader = SceneReader.new(buffer)
 		scene_reader.read_scene()
@@ -82,7 +80,7 @@ func import_gizmo(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
 	if file:
-		var buffer = file.get_buffer(file.get_length())
+		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
 		var giz_reader = GizReader.new(buffer)
 		var gizmos = giz_reader.read_giz()

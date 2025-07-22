@@ -4,7 +4,6 @@ class_name GizObstacle
 #Temporary
 @export var mesh_resource: Mesh = BoxMesh.new()
 
-
 @export var Name: String
 var _position: Vector3
 @export var Position: Vector3:
@@ -39,6 +38,8 @@ func _ready():
 	#    This makes it visible and part of the scene tree.
 	add_child(mesh_instance)
 	var Tlabel = Label3D.new()
+	Tlabel.billboard = true
+	Tlabel.no_depth_test = true
 	add_child(Tlabel)
 	Tlabel.position = Vector3(0,1,0)
 	Tlabel.text = Name
