@@ -45,12 +45,12 @@ func read_spline():
 			var currentPoint = SplineControlPoint.new()
 			currentPoint.position = buffer.getVec3()
 			currentPoint.scale = Vector3(0.2, 0.2, 0.2)
-			currentPoint.Name = splineName
-			currentPoint.name = splineName
+			currentPoint.Name = "Control Point " + str(point)
+			currentPoint.name = "Control Point " + str(point)
 			currentSpline.add_child(currentPoint)
 		currentSpline.Render()
 		var splineTypeLength = buffer.getInt8()
-		var splineType = buffer.array.slice(buffer.position,buffer.position+splineTypeLength).get_string_from_ascii()
+		# var splineType = buffer.array.slice(buffer.position,buffer.position+splineTypeLength).get_string_from_ascii()
 		buffer.position = buffer.position+splineTypeLength
 		splineList.append(currentSpline)
 		

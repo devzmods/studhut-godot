@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_bdi33")
-Scale = 2.0
+Scale = 1.0
 IniFilename = "user://imgui.ini"
 Renderer = "RenderingDevice"
 Layer = 128

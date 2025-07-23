@@ -17,6 +17,7 @@ script = ExtResource("1_o5qli")
 
 [node name="box" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00241947, -4.76837e-07, -5.24607)
+visible = false
 
 [node name="environment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o5qli")
