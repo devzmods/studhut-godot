@@ -86,6 +86,15 @@ func _process(_delta: float) -> void:
 	ImGui.Begin("Imported Files", [], window_flags)
 	ImGui.End()
 
+	panel_pos = Vector2(viewport.size.x - panel_width, menu_bar_height)
+	panel_size = Vector2(panel_width, viewport.size.y * 0.5 - menu_bar_height)
+
+	ImGui.SetNextWindowPos(panel_pos)
+	ImGui.SetNextWindowSize(panel_size)
+	
+	ImGui.Begin("Asset Preview", [], window_flags)
+	ImGui.End()
+
 func import_scene(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
