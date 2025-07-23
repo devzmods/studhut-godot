@@ -60,6 +60,13 @@ func _process(_delta: float) -> void:
 			if child is GizObstacle:
 				if ImGui.Selectable(child.Name): pass
 		ImGui.TreePop()
+	if ImGui.TreeNode("Images"): # Gizmos list
+		var children = get_node("worldScene").get_children()
+		for child in children:
+			if child is GscTexture:
+				if child.ImageTex:
+					ImGui.Image(child.ImageTex,Vector2(256,256))
+		ImGui.TreePop()
 	
 	ImGui.End()
 
@@ -72,8 +79,10 @@ func import_scene(path: String):
 		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
 		var scene_reader = SceneReader.new(buffer)
-		scene_reader.read_scene()
-
+		var textures = scene_reader.read_scene()
+		for i in textures:
+			get_node("worldScene").add_child(i)
+		file.close()
 		file.close()
 	else:
 		print("File could not be opened.")
