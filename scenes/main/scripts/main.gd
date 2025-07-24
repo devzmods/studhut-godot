@@ -62,6 +62,14 @@ func _process(_delta: float) -> void:
 			if child is GizObstacle:
 				if ImGui.Selectable(child.Name): pass
 		ImGui.TreePop()
+		
+	if ImGui.TreeNode("Models"): # Gizmos list
+		var children = world_children
+		for child in children:
+			if child is MeshInstance3D:
+				if ImGui.Selectable(child.name): 
+					child.visible = !child.visible
+		ImGui.TreePop()
 	if ImGui.TreeNode("Images"): # Gizmos list
 		var children = get_node("worldScene").get_children()
 		for child in children:
@@ -110,7 +118,9 @@ func import_scene(path: String):
 
 		var scene_reader = SceneReader.new(buffer)
 		var textures = scene_reader.read_scene()
-		for i in textures:
+		for i in textures[0]:
+			get_node("worldScene").add_child(i)
+		for i in textures[1]:
 			get_node("worldScene").add_child(i)
 		file.close()
 		file.close()
