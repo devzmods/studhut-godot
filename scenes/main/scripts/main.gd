@@ -1,7 +1,8 @@
 extends Node3D
 
-var show_window: bool = true
 var current_project: Project
+
+var last_dir: String = ""
 
 func _show_file_dialog(filters: Array, connect_callable: Callable):
 	"""Helper function to create and show a file dialog."""
@@ -19,10 +20,7 @@ func _show_file_dialog(filters: Array, connect_callable: Callable):
 	
 
 func _process(_delta: float) -> void:
-	if not show_window: return
-
-	var is_open: Array = [show_window]
-	
+	var world_children: Array[Node] = get_node("worldScene").get_children()
 
 	# --- Main Menu Bar for the entire screen ---
 	if ImGui.BeginMainMenuBar():
@@ -32,10 +30,14 @@ func _process(_delta: float) -> void:
 			if ImGui.MenuItem("Save Project.."): pass
 			if ImGui.MenuItem("Import Scene.."):
 				_show_file_dialog(["*.gsc ; TTGames Scene File"], import_scene)
-			if ImGui.MenuItem("Import Giz File.."):
+			if ImGui.MenuItem("Import Gizmos.."):
 				_show_file_dialog(["*.giz ; TTGames Gizmo File"], import_gizmo)
-			if ImGui.MenuItem("Import Spline File.."):
+			if ImGui.MenuItem("Import Splines.."):
 				_show_file_dialog(["*.spl ; TTGames Spline File"], import_spline)
+			if ImGui.MenuItem("Import Text.."):
+				_show_file_dialog(["*.txt ; TTGames Level/Area Text"], func() -> void: pass ) # placeholders
+			if ImGui.MenuItem("Import Lighting.."):
+				_show_file_dialog(["*.rtl ; TTGames Lighting File"], func() -> void: pass ) # placeholders
 			ImGui.EndMenu()
 
 	ImGui.EndMainMenuBar()
@@ -46,16 +48,16 @@ func _process(_delta: float) -> void:
 	var panel_width = viewport.size.x * 0.2
 	var menu_bar_height = ImGui.GetFrameHeight()
 	var panel_pos = Vector2(0, menu_bar_height)
-	var panel_size = Vector2(panel_width, viewport.size.y - menu_bar_height)
+	var panel_size = Vector2(panel_width, viewport.size.y * 0.5 - menu_bar_height)
 
 	ImGui.SetNextWindowPos(panel_pos)
 	ImGui.SetNextWindowSize(panel_size)
-	var window_flags = ImGui.WindowFlags_NoMove | ImGui.WindowFlags_NoResize | ImGui.WindowFlags_NoTitleBar | ImGui.WindowFlags_NoCollapse
+	var window_flags = ImGui.WindowFlags_NoMove | ImGui.WindowFlags_NoResize | ImGui.WindowFlags_NoCollapse
 
-	ImGui.Begin("Project", is_open, window_flags)
+	ImGui.Begin("Project", [], window_flags)
 	
 	if ImGui.TreeNode("Gizmos"): # Gizmos list
-		var children = get_node("worldScene").get_children()
+		var children = world_children
 		for child in children:
 			if child is GizObstacle:
 				if ImGui.Selectable(child.Name): pass
@@ -68,9 +70,37 @@ func _process(_delta: float) -> void:
 					ImGui.Image(child.ImageTex,Vector2(256,256))
 		ImGui.TreePop()
 	
+	if ImGui.TreeNode("Splines"): # Gizmos list
+		var children = world_children
+		for child in children:
+			if child is Spline:
+				if ImGui.TreeNode(child.name):
+					var spline_children = child.get_children()
+					for point in spline_children:
+						if point is SplineControlPoint:
+							if ImGui.Selectable(point.name): pass
+					ImGui.TreePop()
+		ImGui.TreePop()
+
 	ImGui.End()
 
-	show_window = is_open[0]
+	panel_pos = Vector2(0, viewport.size.y * 0.5)
+	panel_size = Vector2(panel_width, viewport.size.y * 0.5)
+
+	ImGui.SetNextWindowPos(panel_pos)
+	ImGui.SetNextWindowSize(panel_size)
+	
+	ImGui.Begin("Imported Files", [], window_flags)
+	ImGui.End()
+
+	panel_pos = Vector2(viewport.size.x - panel_width, menu_bar_height)
+	panel_size = Vector2(panel_width, viewport.size.y * 0.5 - menu_bar_height)
+
+	ImGui.SetNextWindowPos(panel_pos)
+	ImGui.SetNextWindowSize(panel_size)
+	
+	ImGui.Begin("Asset Preview", [], window_flags)
+	ImGui.End()
 
 func import_scene(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)

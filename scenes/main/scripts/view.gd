@@ -4,6 +4,7 @@ extends CharacterBody3D
 @export var look_sens: float = 0.2
 
 @onready var pivot: Node3D = $pivot
+# @onready var camera: Camera3D = $pivot/camera
 var look_enabled: bool = false
 
 func _input(event: InputEvent) -> void:
@@ -27,4 +28,10 @@ func _physics_process(_delta: float) -> void:
 		velocity.y = move_toward(velocity.y, 0, move_speed)
 
 	if look_enabled:
+		# Not sure if I want to keep this
+		# if Input.is_action_just_pressed("zoom_in"):
+		# 	camera.fov -= 5
+		# if Input.is_action_just_pressed("zoom_out"):
+		# 	camera.fov += 5
+
 		move_and_slide()
