@@ -11,7 +11,7 @@ func _process(_delta: float) -> void:
 
 	var panel_width: float = viewport.size.x * 0.2
 
-	ImGui.SetNextWindowSize(Vector2(panel_width, vi  ewport.size.y))
+	ImGui.SetNextWindowSize(Vector2(panel_width, viewport.size.y))
 	ImGui.SetNextWindowPos(Vector2(0, 0))
 	ImGui.Begin("Menu", [], window_flags)
 	if ImGui.Selectable("Projects"): pass

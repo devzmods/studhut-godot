@@ -6,10 +6,8 @@ var last_dir: String = ""
 var uiScale = [1]
 
 func _ready() -> void:
-<<<<<<< HEAD
 	get_window().title = "Studhut Editor"
 
-=======
 	var config = ConfigFile.new()
 	# Load data from a file.
 	var err = config.load("user://Studhut.ini")
@@ -32,7 +30,6 @@ func setScale():
 	ImGuiGD.Scale = uiScale[0]
 	ImGuiGD.RebuildFontAtlas()
 	print("yes")
->>>>>>> fa8983a0e2528ff13ae96db263534c0b02e8a1e2
 func _show_file_dialog(filters: Array, connect_callable: Callable):
 	"""Helper function to create and show a file dialog."""
 	var file_dialog = FileDialog.new()
