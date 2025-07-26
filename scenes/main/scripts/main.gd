@@ -1,9 +1,33 @@
 extends Node3D
 
 var current_project: Project
-
+var settingsUI = false
 var last_dir: String = ""
+var uiScale = [1]
 
+func _ready() -> void:
+	var config = ConfigFile.new()
+	# Load data from a file.
+	var err = config.load("user://Studhut.ini")
+	# If the file didn't load, ignore it.
+	if err != OK:
+		return
+	var uiScaleDat = config.get_value("Settings", "UiScale")
+	uiScale[0] = uiScaleDat
+	call_deferred("setScale")
+
+func saveData():
+	var config = ConfigFile.new()
+	# Store some values.
+	config.set_value("Settings", "UiScale", uiScale[0])
+	# Save it to a file (overwrite if already exists).
+	config.save("user://Studhut.ini")
+
+
+func setScale():
+	ImGuiGD.Scale = uiScale[0]
+	ImGuiGD.RebuildFontAtlas()
+	print("yes")
 func _show_file_dialog(filters: Array, connect_callable: Callable):
 	"""Helper function to create and show a file dialog."""
 	var file_dialog = FileDialog.new()
@@ -39,9 +63,26 @@ func _process(_delta: float) -> void:
 			if ImGui.MenuItem("Import Lighting.."):
 				_show_file_dialog(["*.rtl ; TTGames Lighting File"], func() -> void: pass ) # placeholders
 			ImGui.EndMenu()
-
+		if ImGui.BeginMenu("Options"):
+			if ImGui.MenuItem("Settings"): 
+				settingsUI = !settingsUI
+			ImGui.EndMenu()
 	ImGui.EndMainMenuBar()
 	
+	if settingsUI:
+		ImGui.Begin("Settings")
+		ImGui.BeginChild("ScrollingRegion",Vector2(0,-ImGui.GetFrameHeight()));
+
+		var result = ImGui.DragFloatEx("UI Scale", uiScale,0.01, 0.25, 8.0)
+
+		ImGui.Separator()
+		
+		ImGui.EndChild();
+		if (ImGui.Button("Apply")):
+			call_deferred("setScale")
+			
+			call_deferred("saveData")
+		ImGui.End()
 	
 	var viewport = get_viewport().get_visible_rect()
 	
@@ -117,19 +158,17 @@ func import_scene(path: String):
 		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
 		var scene_reader = SceneReader.new(buffer)
-		var textures = scene_reader.read_scene()
-		for i in textures[0]:
+		var texturesAndModels = scene_reader.read_scene()
+		for i in texturesAndModels[0]:
 			get_node("worldScene").add_child(i)
-		for i in textures[1]:
+		for i in texturesAndModels[1]:
 			get_node("worldScene").add_child(i)
-		file.close()
 		file.close()
 	else:
 		print("File could not be opened.")
 		
 func import_gizmo(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
-
 	if file:
 		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 

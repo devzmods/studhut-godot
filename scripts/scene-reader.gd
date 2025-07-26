@@ -12,8 +12,8 @@ var modelList = []
 static func triangle_strip_to_obj_faces(strip_indices):
 		var faces = []
 		for i in range(len(strip_indices) - 2):
-			var v1 
-			var v2 
+			var v1
+			var v2
 			var v3
 			if (i % 2) == 0:
 				v1 = strip_indices[i] + 1
@@ -27,11 +27,6 @@ static func triangle_strip_to_obj_faces(strip_indices):
 			faces.append(face_line)
 		return faces
 		
-
-
-
-
-
 
 func _init(file_buffer: FileBuffer) -> void:
 	buffer = file_buffer
@@ -50,43 +45,43 @@ func read_scene():
 	
 	print("SCENE FORMAT: ", Project.SCENE_FORMAT)
 	buffer.position = 0x18 # skip garbage headers
-	var pointerListLocation = buffer.getInt32()+buffer.position - 8
-	buffer.position = pointerListLocation +4 #skip PNTR header
+	var pointerListLocation = buffer.getInt32() + buffer.position - 8
+	buffer.position = pointerListLocation + 4 # skip PNTR header
 	var ammountOfPointers = buffer.getInt32()
 
 	for pointerCount in range(ammountOfPointers):
 		pointerArray.append(buffer.getInt32())
 	# go back to top of file to get to scene list
 	buffer.position = 0x1c
-	var sceneListPointer = buffer.getInt32()+buffer.position-8
-	buffer.position = sceneListPointer+0x8
+	var sceneListPointer = buffer.getInt32() + buffer.position - 8
+	buffer.position = sceneListPointer + 0x8
 	var textureCount = buffer.getInt32()
-	var imageMetadataOffset = buffer.getInt32() +buffer.position-4
-	var ddsDataPointer = pointerListLocation + ammountOfPointers*4 + 4+12+4
+	var imageMetadataOffset = buffer.getInt32() + buffer.position - 4
+	var ddsDataPointer = pointerListLocation + ammountOfPointers * 4 + 4 + 12 + 4
 	var temporaryPointer = buffer.position
 	for i in range(textureCount):
 		buffer.position = imageMetadataOffset
-		var relative_offset = buffer.getInt32() #this is really bad i gotta redo all of this
+		var relative_offset = buffer.getInt32() # this is really bad i gotta redo all of this
 		buffer.position = relative_offset + imageMetadataOffset
 		var imagex = buffer.getInt32()
-		buffer.position = relative_offset + imageMetadataOffset +4
+		buffer.position = relative_offset + imageMetadataOffset + 4
 		var imagey = buffer.getInt32()
 		var size_location = relative_offset + imageMetadataOffset + 0x44
 		buffer.position = size_location
 		var currentImageSize = buffer.getInt32()
-		var imageBuffer = buffer.array.slice(ddsDataPointer+128,ddsDataPointer+currentImageSize)
+		var imageBuffer = buffer.array.slice(ddsDataPointer + 128, ddsDataPointer + currentImageSize)
 		imageMetadataOffset = imageMetadataOffset + 4
-		var outputTexture = GscTexture.new() 
-		outputTexture.Data = Image.create_from_data(imagex,imagey,true,Image.FORMAT_DXT1,imageBuffer) #THIS NEEDS TO BE WAY BETTER
+		var outputTexture = GscTexture.new()
+		outputTexture.Data = Image.create_from_data(imagex, imagey, true, Image.FORMAT_DXT1, imageBuffer) # THIS NEEDS TO BE WAY BETTER
 		if not outputTexture.ImageTex:
 			#print("first time failed")
-			outputTexture.Data = Image.create_from_data(imagex,imagey,false,Image.FORMAT_DXT1,imageBuffer) #THIS NEEDS TO BE WAY BETTER
+			outputTexture.Data = Image.create_from_data(imagex, imagey, false, Image.FORMAT_DXT1, imageBuffer) # THIS NEEDS TO BE WAY BETTER
 		if not outputTexture.ImageTex:
 			#print("seccond time failed")
-			outputTexture.Data = Image.create_from_data(imagex,imagey,false,Image.FORMAT_DXT5,imageBuffer) #THIS NEEDS TO BE WAY BETTER
+			outputTexture.Data = Image.create_from_data(imagex, imagey, false, Image.FORMAT_DXT5, imageBuffer) # THIS NEEDS TO BE WAY BETTER
 		if not outputTexture.ImageTex:
 			#print("third time failed")
-			outputTexture.Data = Image.create_from_data(imagex,imagey,true,Image.FORMAT_DXT5,imageBuffer) #THIS NEEDS TO BE WAY BETTER
+			outputTexture.Data = Image.create_from_data(imagex, imagey, true, Image.FORMAT_DXT5, imageBuffer) # THIS NEEDS TO BE WAY BETTER
 		textureList.append(outputTexture)
 		ddsDataPointer = ddsDataPointer + currentImageSize
 	buffer.position = ddsDataPointer
@@ -104,7 +99,7 @@ func read_scene():
 		var size = buffer.getInt32()
 		indiciesList.append(buffer.position)
 		buffer.position += size
-	sceneListPointer = sceneListPointer -4
+	sceneListPointer = sceneListPointer - 4
 	var base_address = sceneListPointer + 0x1d8
 
 	buffer.position = base_address
@@ -119,8 +114,8 @@ func read_scene():
 
 	# Now, read the number of parts from the correct location
 	var partsNumber = buffer.getInt16()
-	buffer.position = parts_data_location+0x20 
-	buffer.position += buffer.getInt32()-4
+	buffer.position = parts_data_location + 0x20
+	buffer.position += buffer.getInt32() - 4
 	print(buffer.position)
 	for i in range(partsNumber):
 		buffer.position += 4
@@ -158,9 +153,9 @@ func read_scene():
 			indices.append(indexValue)
 		var obj_faces = triangle_strip_to_obj_faces(indices)
 		for face in obj_faces:
-			obj_file = obj_file + (face+"\n")
+			obj_file = obj_file + (face + "\n")
 		var object = MeshInstance3D.new()
-		object.mesh = ObjParse.load_obj_from_buffer(obj_file,{})
+		object.mesh = ObjParse.load_obj_from_buffer(obj_file, {})
 		object.visible = false
 		modelList.append(object)
 		buffer.position = bufferPositionSaved
@@ -169,4 +164,3 @@ func read_scene():
 	
 	
 	position = nu20_loc + 0x18
-		
