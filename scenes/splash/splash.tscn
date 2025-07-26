@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://gupwn3ksuned"]
+
+[ext_resource type="Script" uid="uid://cpdgwjwdg6jse" path="res://scenes/splash/scripts/splash.gd" id="1_i52gs"]
+
+[node name="splash" type="Node"]
+script = ExtResource("1_i52gs")

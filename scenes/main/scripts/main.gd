@@ -4,6 +4,9 @@ var current_project: Project
 
 var last_dir: String = ""
 
+func _ready() -> void:
+	get_window().title = "Studhut Editor"
+
 func _show_file_dialog(filters: Array, connect_callable: Callable):
 	"""Helper function to create and show a file dialog."""
 	var file_dialog = FileDialog.new()
