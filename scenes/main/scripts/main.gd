@@ -7,6 +7,8 @@ var uiScale = [1]
 
 func _ready() -> void:
 	get_window().title = "Studhut Editor"
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_RESIZE_DISABLED, false)
+	get_window().size = Vector2(1280, 720)
 
 	var config = ConfigFile.new()
 	# Load data from a file.
@@ -18,6 +20,7 @@ func _ready() -> void:
 	uiScale[0] = uiScaleDat
 	call_deferred("setScale")
 
+
 func saveData():
 	var config = ConfigFile.new()
 	# Store some values.
@@ -25,11 +28,11 @@ func saveData():
 	# Save it to a file (overwrite if already exists).
 	config.save("user://Studhut.ini")
 
-
 func setScale():
 	ImGuiGD.Scale = uiScale[0]
 	ImGuiGD.RebuildFontAtlas()
 	print("yes")
+
 func _show_file_dialog(filters: Array, connect_callable: Callable):
 	"""Helper function to create and show a file dialog."""
 	var file_dialog = FileDialog.new()
@@ -42,8 +45,7 @@ func _show_file_dialog(filters: Array, connect_callable: Callable):
 	file_dialog.file_selected.connect(connect_callable)
 	
 	add_child(file_dialog)
-	file_dialog.popup_centered()
-	
+	file_dialog.popup_centered()	
 
 func _process(_delta: float) -> void:
 	var world_children: Array[Node] = get_node("worldScene").get_children()
@@ -66,16 +68,16 @@ func _process(_delta: float) -> void:
 				_show_file_dialog(["*.rtl ; TTGames Lighting File"], func() -> void: pass ) # placeholders
 			ImGui.EndMenu()
 		if ImGui.BeginMenu("Options"):
-			if ImGui.MenuItem("Settings"): 
+			if ImGui.MenuItem("Settings"):
 				settingsUI = !settingsUI
 			ImGui.EndMenu()
 	ImGui.EndMainMenuBar()
 	
 	if settingsUI:
 		ImGui.Begin("Settings")
-		ImGui.BeginChild("ScrollingRegion",Vector2(0,-ImGui.GetFrameHeight()));
+		ImGui.BeginChild("ScrollingRegion", Vector2(0, -ImGui.GetFrameHeight()));
 
-		var result = ImGui.DragFloatEx("UI Scale", uiScale,0.01, 0.25, 8.0)
+		var result = ImGui.DragFloatEx("UI Scale", uiScale, 0.01, 0.25, 8.0)
 
 		ImGui.Separator()
 		
@@ -110,7 +112,7 @@ func _process(_delta: float) -> void:
 		var children = world_children
 		for child in children:
 			if child is MeshInstance3D:
-				if ImGui.Selectable(child.name): 
+				if ImGui.Selectable(child.name):
 					child.visible = !child.visible
 		ImGui.TreePop()
 	if ImGui.TreeNode("Images"): # Gizmos list
@@ -118,7 +120,7 @@ func _process(_delta: float) -> void:
 		for child in children:
 			if child is GscTexture:
 				if child.ImageTex:
-					ImGui.Image(child.ImageTex,Vector2(256,256))
+					ImGui.Image(child.ImageTex, Vector2(256, 256))
 		ImGui.TreePop()
 	
 	if ImGui.TreeNode("Splines"): # Gizmos list

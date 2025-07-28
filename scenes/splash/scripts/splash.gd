@@ -22,4 +22,5 @@ func _process(_delta: float) -> void:
 	ImGui.SetNextWindowSize(Vector2(panel_width, viewport.size.y))
 	ImGui.SetNextWindowPos(Vector2(viewport.size.x * 0.2, 0))
 	ImGui.Begin("Projects", [], window_flags)
+	if ImGui.Button("New Project.."): get_tree().change_scene_to_file("res://scenes/main/main.tscn")
 	ImGui.End()
