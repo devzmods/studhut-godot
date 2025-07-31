@@ -72,6 +72,7 @@ func read_scene():
 		var imageBuffer = buffer.array.slice(ddsDataPointer + 128, ddsDataPointer + currentImageSize)
 		imageMetadataOffset = imageMetadataOffset + 4
 		var outputTexture = GscTexture.new()
+		outputTexture.name = "Texture " + str(i)
 		outputTexture.Data = Image.create_from_data(imagex, imagey, true, Image.FORMAT_DXT1, imageBuffer) # THIS NEEDS TO BE WAY BETTER
 		if not outputTexture.ImageTex:
 			#print("first time failed")

@@ -5,6 +5,8 @@ var settingsUI = false
 var last_dir: String = ""
 var uiScale = [1]
 
+var preview_tex: GscTexture
+
 func _ready() -> void:
 	get_window().title = "Studhut Editor"
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_RESIZE_DISABLED, false)
@@ -77,7 +79,7 @@ func _process(_delta: float) -> void:
 		ImGui.Begin("Settings")
 		ImGui.BeginChild("ScrollingRegion", Vector2(0, -ImGui.GetFrameHeight()));
 
-		var result = ImGui.DragFloatEx("UI Scale", uiScale, 0.01, 0.25, 8.0)
+		ImGui.DragFloatEx("UI Scale", uiScale, 0.01, 0.25, 8.0)
 
 		ImGui.Separator()
 		
@@ -120,7 +122,8 @@ func _process(_delta: float) -> void:
 		for child in children:
 			if child is GscTexture:
 				if child.ImageTex:
-					ImGui.Image(child.ImageTex, Vector2(256, 256))
+					# ImGui.Image(child.ImageTex, Vector2(256, 256))
+					if ImGui.Selectable(child.name): preview_tex = child
 		ImGui.TreePop()
 	
 	if ImGui.TreeNode("Splines"): # Gizmos list
@@ -153,6 +156,12 @@ func _process(_delta: float) -> void:
 	ImGui.SetNextWindowSize(panel_size)
 	
 	ImGui.Begin("Asset Preview", [], window_flags)
+	if preview_tex:
+		var tex_size: Vector2 = preview_tex.ImageTex.get_size()
+
+		ImGui.Text(preview_tex.name)
+		ImGui.Text(str(roundi(tex_size.x)) + "x" + str(roundi(tex_size.y)))
+		ImGui.Image(preview_tex.ImageTex, Vector2(192, 192))
 	ImGui.End()
 
 func import_scene(path: String):
