@@ -46,7 +46,10 @@ func read_scene():
 	print("SCENE FORMAT: ", Project.SCENE_FORMAT)
 	buffer.position = 0x18 # skip garbage headers
 	var pointerListLocation = buffer.getInt32() + buffer.position - 8
-	buffer.position = pointerListLocation + 4 # skip PNTR header
+	buffer.position = pointerListLocation # skip PNTR header
+	var pointerListSize = buffer.getInt32()
+	var ddsDataPointer = buffer.position + pointerListSize -4
+
 	var ammountOfPointers = buffer.getInt32()
 
 	for pointerCount in range(ammountOfPointers):
@@ -57,8 +60,6 @@ func read_scene():
 	buffer.position = sceneListPointer + 0x8
 	var textureCount = buffer.getInt32()
 	var imageMetadataOffset = buffer.getInt32() + buffer.position - 4
-	var ddsDataPointer = pointerListLocation + ammountOfPointers * 4 + 4 + 12 + 4
-	var temporaryPointer = buffer.position
 	for i in range(textureCount):
 		buffer.position = imageMetadataOffset
 		var relative_offset = buffer.getInt32() # this is really bad i gotta redo all of this
@@ -87,7 +88,7 @@ func read_scene():
 		ddsDataPointer = ddsDataPointer + currentImageSize
 	buffer.position = ddsDataPointer
 	var vertexListCount = buffer.getInt16()
-	print(vertexListCount)
+	#print(vertexListCount)
 	var vertexLists = []
 	
 	for i in range(vertexListCount):
@@ -96,7 +97,6 @@ func read_scene():
 		buffer.position += vertexListSize
 	
 	var numberOfIndicieLists = buffer.getInt16()
-	print(numberOfIndicieLists)
 	var indiciesList: Array = []
 	for i in range(numberOfIndicieLists):
 		var size = buffer.getInt32()
@@ -119,7 +119,7 @@ func read_scene():
 	var partsNumber = buffer.getInt16()
 	buffer.position = parts_data_location + 0x20
 	buffer.position += buffer.getInt32() - 4
-	print(buffer.position)
+
 	for i in range(partsNumber):
 		buffer.position += 4
 		var numberOfIndicies = buffer.getInt32()
@@ -148,7 +148,7 @@ func read_scene():
 			var z = buffer.getFloat()
 			obj_file = obj_file + ("v %.6f %.6f %.6f\n" % [x, y, z])
 		var indices = []
-		print(len(indiciesList))
+		#print(len(indiciesList))
 		var indexBuffer = indiciesList[indexList]
 		for index in range(numberOfIndicies + 2):
 			var indexBufferPointer = indexBuffer + offsetIndicies * 2 + index * 2
