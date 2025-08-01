@@ -22,6 +22,11 @@ func getInt32() -> int:
 	position += 4
 	return result
 
+func getUInt32() -> int:
+	var result: int = array.decode_u32(position)
+	position += 4
+	return result
+
 func getFloat() -> float:
 	var result: float = array.decode_float(position)
 	position += 4

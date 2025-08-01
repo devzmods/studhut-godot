@@ -47,7 +47,7 @@ func _show_file_dialog(filters: Array, connect_callable: Callable):
 	file_dialog.file_selected.connect(connect_callable)
 	
 	add_child(file_dialog)
-	file_dialog.popup_centered()	
+	file_dialog.popup_centered()
 
 func _process(_delta: float) -> void:
 	var world_children: Array[Node] = get_node("worldScene").get_children()
@@ -65,7 +65,7 @@ func _process(_delta: float) -> void:
 			if ImGui.MenuItem("Import Splines.."):
 				_show_file_dialog(["*.spl ; TTGames Spline File"], import_spline)
 			if ImGui.MenuItem("Import Text.."):
-				_show_file_dialog(["*.txt ; TTGames Level/Area Text"], func() -> void: pass ) # placeholders
+				_show_file_dialog(["*.txt ; TTGames Level/Area Text"], import_text)
 			if ImGui.MenuItem("Import Lighting.."):
 				_show_file_dialog(["*.rtl ; TTGames Lighting File"], func() -> void: pass ) # placeholders
 			ImGui.EndMenu()
@@ -111,14 +111,15 @@ func _process(_delta: float) -> void:
 		ImGui.TreePop()
 		
 	if ImGui.TreeNode("Models"): # Gizmos list
-		var children = world_children
+		var children = get_node("models").get_children()
 		for child in children:
 			if child is MeshInstance3D:
 				if ImGui.Selectable(child.name):
 					child.visible = !child.visible
 		ImGui.TreePop()
-	if ImGui.TreeNode("Images"): # Gizmos list
-		var children = get_node("worldScene").get_children()
+	
+	if ImGui.TreeNode("Textures"): # Images list
+		var children = get_node("textures").get_children()
 		for child in children:
 			if child is GscTexture:
 				if child.ImageTex:
@@ -126,7 +127,7 @@ func _process(_delta: float) -> void:
 					if ImGui.Selectable(child.name): preview_tex = child
 		ImGui.TreePop()
 	
-	if ImGui.TreeNode("Splines"): # Gizmos list
+	if ImGui.TreeNode("Splines"): # Splines list
 		var children = world_children
 		for child in children:
 			if child is Spline:
@@ -167,15 +168,21 @@ func _process(_delta: float) -> void:
 func import_scene(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
+	for child in get_node("textures").get_children():
+		child.free()
+
+	for child in get_node("models").get_children():
+		child.free()
+
 	if file:
 		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
 		var scene_reader = SceneReader.new(buffer)
 		var texturesAndModels = scene_reader.read_scene()
 		for i in texturesAndModels[0]:
-			get_node("worldScene").add_child(i)
+			get_node("textures").add_child(i)
 		for i in texturesAndModels[1]:
-			get_node("worldScene").add_child(i)
+			get_node("models").add_child(i)
 		file.close()
 	else:
 		print("File could not be opened.")
@@ -197,12 +204,21 @@ func import_spline(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
 	if file:
-		var buffer = FileBuffer.new(file.get_buffer(file.get_length()))
+		var buffer: FileBuffer = FileBuffer.new(file.get_buffer(file.get_length()))
 
-		var spline_reader = SplineReader.new(buffer)
-		var splines = spline_reader.read_spline()
+		var spline_reader: SplineReader = SplineReader.new(buffer)
+		var splines: Array = spline_reader.read_spline()
 		for i in splines:
 			get_node("worldScene").add_child(i)
 		file.close()
 	else:
 		print("File could not be opened.")
+
+func import_text(path: String):
+	var file = FileAccess.open(path, FileAccess.READ)
+
+	if file:
+		var text: String = file.get_as_text()
+
+		var text_reader: TextReader = TextReader.new(text)
+		text_reader.read_text()

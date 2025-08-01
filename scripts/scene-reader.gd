@@ -87,6 +87,7 @@ func read_scene():
 		ddsDataPointer = ddsDataPointer + currentImageSize
 	buffer.position = ddsDataPointer
 	var vertexListCount = buffer.getInt16()
+	print(vertexListCount)
 	var vertexLists = []
 	
 	for i in range(vertexListCount):
@@ -95,7 +96,8 @@ func read_scene():
 		buffer.position += vertexListSize
 	
 	var numberOfIndicieLists = buffer.getInt16()
-	var indiciesList = []
+	print(numberOfIndicieLists)
+	var indiciesList: Array = []
 	for i in range(numberOfIndicieLists):
 		var size = buffer.getInt32()
 		indiciesList.append(buffer.position)
@@ -146,6 +148,7 @@ func read_scene():
 			var z = buffer.getFloat()
 			obj_file = obj_file + ("v %.6f %.6f %.6f\n" % [x, y, z])
 		var indices = []
+		print(len(indiciesList))
 		var indexBuffer = indiciesList[indexList]
 		for index in range(numberOfIndicies + 2):
 			var indexBufferPointer = indexBuffer + offsetIndicies * 2 + index * 2
