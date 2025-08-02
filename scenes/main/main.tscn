@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://737k83kk1fab"]
+[gd_scene load_steps=8 format=3 uid="uid://737k83kk1fab"]
 
 [ext_resource type="Script" uid="uid://sh757bc6jq2l" path="res://scenes/main/scripts/main.gd" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://xf30nf2xcl0g" path="res://scenes/main/scripts/view.gd" id="2_iuonh"]
@@ -9,6 +9,15 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_hyk8p"]
+
+[sub_resource type="Environment" id="Environment_iuonh"]
+ambient_light_source = 2
+ambient_light_color = Color(0.688595, 0.688595, 0.688595, 1)
+
+[sub_resource type="World3D" id="World3D_iuonh"]
+environment = SubResource("Environment_iuonh")
+
+[sub_resource type="BoxMesh" id="BoxMesh_iuonh"]
 
 [node name="world" type="Node3D"]
 script = ExtResource("1_o5qli")
@@ -40,3 +49,27 @@ transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.43
 [node name="models" type="Node" parent="."]
 
 [node name="textures" type="Node" parent="."]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+world_3d = SubResource("World3D_iuonh")
+transparent_bg = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport"]
+environment = SubResource("Environment_iuonh")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+light_color = Color(0.00784314, 0, 1, 1)
+light_energy = 8.354
+spot_range = 326.494
+spot_angle = 105.0
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.12921)
+
+[node name="Preview" type="Node3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport/Preview"]
+mesh = SubResource("BoxMesh_iuonh")
+skeleton = NodePath("../..")

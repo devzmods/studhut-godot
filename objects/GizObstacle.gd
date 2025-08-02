@@ -16,7 +16,7 @@ var _rotation: Vector3
 @export var Rotation: Vector3:
 	set(new_value):
 		_rotation = new_value
-		rotation = new_value
+		rotation_degrees = new_value
 	get:
 		return _rotation
 var _scale: Vector3

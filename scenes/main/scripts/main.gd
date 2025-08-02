@@ -5,7 +5,7 @@ var settingsUI = false
 var last_dir: String = ""
 var uiScale = [1]
 
-var preview_tex: GscTexture
+var preview_tex
 
 func _ready() -> void:
 	get_window().title = "Studhut Editor"
@@ -115,7 +115,8 @@ func _process(_delta: float) -> void:
 		for child in children:
 			if child is MeshInstance3D:
 				if ImGui.Selectable(child.name):
-					child.visible = !child.visible
+					preview_tex = child
+					#child.visible = !child.visible
 		ImGui.TreePop()
 	
 	if ImGui.TreeNode("Textures"): # Images list
@@ -158,13 +159,35 @@ func _process(_delta: float) -> void:
 	
 	ImGui.Begin("Asset Preview", [], window_flags)
 	if preview_tex:
-		var tex_size: Vector2 = preview_tex.ImageTex.get_size()
+		if preview_tex is GscTexture:
+			var tex_size: Vector2 = preview_tex.ImageTex.get_size()
 
-		ImGui.Text(preview_tex.name)
-		ImGui.Text(str(roundi(tex_size.x)) + "x" + str(roundi(tex_size.y)))
-		ImGui.Image(preview_tex.ImageTex, Vector2(192, 192))
+			ImGui.Text(preview_tex.name)
+			ImGui.Text(str(roundi(tex_size.x)) + "x" + str(roundi(tex_size.y)))
+			ImGui.Image(preview_tex.ImageTex, Vector2(192, 192))
+		if preview_tex is MeshInstance3D:
+			
+			
+			$SubViewport/Preview/MeshInstance3D.mesh = preview_tex.mesh
+			var aabb = $SubViewport/Preview/MeshInstance3D.get_aabb()
+			# 2. Calculate the midpoint relative to the model's origin
+			var midpoint = aabb.position + aabb.size / 2.0
+			# 3. Set the model's position to the inverse of the midpoint
+			var largest_dimension = max(aabb.size.x, max(aabb.size.y, aabb.size.z))
+			var scale_factor = 1.0
+			if largest_dimension > 0:
+				scale_factor = 2 / largest_dimension
+			$SubViewport/Preview/MeshInstance3D.scale = Vector3.ONE * scale_factor
+			$SubViewport/Preview/MeshInstance3D.position = -midpoint * scale_factor
+
+			var tex_size = $SubViewport/Preview/MeshInstance3D.scale
+			ImGui.Text(preview_tex.name)
+			ImGui.Text(str(tex_size))
+	# 4. Find the original midpoint
+			ImGui.Image($SubViewport.get_texture(), Vector2(192, 192))
 	ImGui.End()
-
+	$SubViewport/Preview.rotate_x(.01)
+	$SubViewport/Preview.rotate_y(.01)
 func import_scene(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 
