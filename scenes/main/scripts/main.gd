@@ -67,7 +67,7 @@ func _process(_delta: float) -> void:
 			if ImGui.MenuItem("Import Text.."):
 				_show_file_dialog(["*.txt ; TTGames Level/Area Text"], import_text)
 			if ImGui.MenuItem("Import Lighting.."):
-				_show_file_dialog(["*.rtl ; TTGames Lighting File"], func() -> void: pass ) # placeholders
+				_show_file_dialog(["*.rtl ; TTGames Lighting File"], import_lights) # placeholders
 			ImGui.EndMenu()
 		if ImGui.BeginMenu("Options"):
 			if ImGui.MenuItem("Settings"):
@@ -232,6 +232,20 @@ func import_spline(path: String):
 		var spline_reader: SplineReader = SplineReader.new(buffer)
 		var splines: Array = spline_reader.read_spline()
 		for i in splines:
+			get_node("worldScene").add_child(i)
+		file.close()
+	else:
+		print("File could not be opened.")
+		
+func import_lights(path: String):
+	var file = FileAccess.open(path, FileAccess.READ)
+
+	if file:
+		var buffer: FileBuffer = FileBuffer.new(file.get_buffer(file.get_length()))
+
+		var rtl_reader: RtlReader = RtlReader.new(buffer)
+		var lights: Array = rtl_reader.read_rtl()
+		for i in lights:
 			get_node("worldScene").add_child(i)
 		file.close()
 	else:
